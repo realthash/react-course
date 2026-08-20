@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>exercise</title>
+</head>
+
+<body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+    <script type="text/babel">
+        function ClickButton() {
+
+            const [clickCount, setClickCount] = React.useState(0)
+
+            function forButton() {
+                console.log('clicked')
+                setClickCount(clickCount + 1)
+            }
+            function resetCount() {
+                setClickCount(0)
+            }
+            return (
+                <>
+                    <button
+                        onClick={forButton}
+                    >{clickCount === 0 && (<>click {clickCount} time</>)}
+                        {clickCount > 0 && (<>click {clickCount} times</>)}
+                    </button>
+                    <button
+                        onClick={forButton}
+                    >{clickCount === 0 && (<>click {clickCount} time</>)}
+                        {clickCount > 0 && (<>click {clickCount} times</>)}
+                    </button>
+                    <button
+                        onClick={resetCount}>Reset</button>
+                </>
+            )
+        }
+
+        function App() {
+            return (
+                <>
+                    <ClickButton />
+                </>
+            )
+
+        }
+
+    </script>
+
+    <script type="text/babel">
+        const container = document.querySelector('.js-container')
+        const root = ReactDOM.createRoot(container)
+        root.render(<App />)
+
+    </script>
+
+</body>
+
+</html>
