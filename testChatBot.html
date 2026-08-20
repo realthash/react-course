@@ -4,7 +4,7 @@
 <head>
     <title>Chatbot</title>
     <style>
-        body {
+        /* body {
             font-family: Arial, Helvetica, sans-serif;
             margin: 0px;
         }
@@ -77,7 +77,7 @@
         .profileImage {
             width: 40px;
             height: 40px;
-        }
+        } */
     </style>
 </head>
 
@@ -94,18 +94,18 @@
     <script type="text/babel">
         function ChatInput({ chatMessages, setChatMessages }) {
             const [inputText, setInputText] = React.useState('')
-            const [isLoading, setIsLoading] = React.useState(false)
+            // const [isLoading, setIsLoading] = React.useState(false)
 
             function saveInputText(event) {
                 setInputText(event.target.value)
             }
 
             async function sendMessage() {
-                if (!inputText.trim() || isLoading) {
+                if (!inputText.trim()) {
                     return
                 }
 
-                setIsLoading(true)
+                // setIsLoading(true)
                 setInputText('')
                 const loadingId = crypto.randomUUID()
                 const newMessages = [
@@ -115,21 +115,28 @@
                         sender: 'user',
                         id: crypto.randomUUID()
                     }, {
-                        message: 'Loading...',
+                        message: 'Loading',
                         sender: 'robot',
                         id: loadingId
                     }
+
                 ]
                 setChatMessages(newMessages)
 
                 const response = await chatbot.getResponseAsync(inputText)
+                console.log(response)
+                setChatMessages((prevMessages) => {
+                    return prevMessages.map((msg) => {
+                        return msg.id === loadingId ? { ...msg, message: response } : msg
+                    })
+                })
+                // setChatMessages(
+                //     (prevMessages) =>
+                //         prevMessages.map((msg) =>
+                //             msg.id === loadingId ? { ...msg, message: response } : msg
+                //         )
+                // )
 
-                setChatMessages(
-                    (prevMessages) =>
-                        prevMessages.map((msg) =>
-                            msg.id === loadingId ? { ...msg, message: response } : msg
-                        )
-                )
                 // setChatMessages([
                 //     ...newMessages,
                 //     {
@@ -138,9 +145,7 @@
                 //         id: crypto.randomUUID()
                 //     }
                 // ])
-                setIsLoading(false)
-
-
+                // setIsLoading(false)
             }
 
             function sendMessageOnKey(event) {
@@ -160,9 +165,9 @@
                     ></input>
                     <button
                         onClick={sendMessage}
-                        disabled={isLoading || inputText.trim() === ''}
+
                         className="send-button"
-                    >{isLoading ? 'Sending...' : 'Send'}
+                    >send
                     </button>
 
                 </div>
@@ -173,32 +178,22 @@
             return (
                 <div className={sender === 'user' ? 'chat-message-user' : 'chat-message-robot'}>
                     {sender === 'robot' && (<>
-                        <img src="robot.png" className="profileImage"></img>
+                        <img src="robot.png" className="profileImage" width="40"></img>
                     </>)}
                     <div className='display-message'>
                         {message}
                     </div>
 
                     {sender === 'user' && (<>
-                        <img src="user.png" className="profileImage"></img>
+                        <img src="user.png" width="40" className="profileImage"></img>
                     </>)}
                 </div>
             )
         }
 
         function ChatMessages({ chatMessages }) {
-            const chatMessageRef = React.useRef(null)
-            React.useEffect(() => {
-                console.log('updated')
-                const containerElem = chatMessageRef.current
-                if (containerElem) {
-                    containerElem.scrollTop = containerElem.scrollHeight
-                }
-            }, [chatMessages])
-
             return (
-                <div className="chat-container"
-                    ref={chatMessageRef}>
+                <div className="chat-container">
                     {chatMessages.map((chatMessage) => {
                         return (
                             <ChatMessage
@@ -214,20 +209,20 @@
 
         function App() {
             const [chatMessages, setChatMessages] = React.useState([{
+                id: '1231',
                 message: 'Welcome to the chatbot',
-                sender: 'robot',
-                id: 'sadfadfafdadfa'
+                sender: 'robot'
             }])
 
             return (
                 <div className="app-container">
-
-                    <ChatMessages
-                        chatMessages={chatMessages}
-                    />
                     <ChatInput
                         chatMessages={chatMessages}
                         setChatMessages={setChatMessages} />
+                    <ChatMessages
+                        chatMessages={chatMessages}
+                    />
+
                 </div>
             )
         }
